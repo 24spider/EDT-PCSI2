@@ -55,16 +55,18 @@
 
     // --- TROUVER LA SEMAINE COURANTE ---
     function getCurrentWeek() {
-      const today = new Date();
-      let current = weeks[0].num; // par défaut semaine 1
-      for (let i = 0; i < weeks.length; i++) {
-        const start = new Date(weeks[i].start);
-        if (today >= start) {
-          current = weeks[i].num;
-        }
-      }
-      return current;
+  const today = new Date();
+  for (let i = 0; i < weeks.length; i++) {
+    const start = new Date(weeks[i].start);
+    const next = (i + 1 < weeks.length) ? new Date(weeks[i + 1].start) : null;
+
+    if (today >= start && (!next || today < next)) {
+      return weeks[i].num;
     }
+  }
+  return 1; // par défaut si rien trouvé
+}
+
 
     let currentWeek = getCurrentWeek();
 
