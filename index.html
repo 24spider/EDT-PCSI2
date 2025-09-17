@@ -1,33 +1,97 @@
-// --- TROUVER LA SEMAINE COURANTE ---
-function getCurrentWeek() {
-  const today = new Date();
-  for (let i = 0; i < weeks.length; i++) {
-    const start = new Date(weeks[i].start);
-    const next = (i + 1 < weeks.length) ? new Date(weeks[i + 1].start) : null;
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Emploi du temps</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+    img { max-width: 100%; height: auto; margin-top: 20px; }
+    .nav { margin-top: 20px; }
+    button { margin: 5px; padding: 10px 15px; font-size: 16px; }
+  </style>
+</head>
+<body>
+  <h1 id="welcome"></h1>
+  <div id="edt"></div>
+  <div class="nav">
+    <button onclick="changeWeek(-1)">⏪ Semaine précédente</button>
+    <button onclick="changeWeek(1)">⏩ Semaine suivante</button>
+  </div>
 
-    if (today >= start && (!next || today < next)) {
-      return weeks[i].num;
+  <script>
+    // --- PARAMETRES ---
+    const weeks = [
+      { num: 1, start: "2023-09-15", label: "15 sept" },
+      { num: 2, start: "2023-09-22", label: "22 sept" },
+      { num: 3, start: "2023-09-29", label: "29 sept" },
+      { num: 4, start: "2023-10-06", label: "06 oct" },
+      { num: 5, start: "2023-10-13", label: "13 oct" },
+      { num: 6, start: "2023-11-03", label: "03 nov" },
+      { num: 7, start: "2023-11-10", label: "10 nov" },
+      { num: 8, start: "2023-11-17", label: "17 nov" },
+      { num: 9, start: "2023-11-24", label: "24 nov" },
+      { num: 10, start: "2023-12-01", label: "01 déc" },
+      { num: 11, start: "2023-12-08", label: "08 déc" },
+      { num: 12, start: "2023-12-15", label: "15 déc" },
+      { num: 13, start: "2024-01-05", label: "05 janv" },
+      { num: 14, start: "2024-01-12", label: "12 janv" },
+      { num: 15, start: "2024-01-19", label: "19 janv" },
+      { num: 16, start: "2024-01-26", label: "26 janv" }
+    ];
+
+    // --- LECTURE DU GROUPE ---
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
     }
-  }
-  return weeks.length + 1; // Retourne 17, 18... si on est après la dernière semaine
-}
+    const groupe = getQueryParam("grp");
 
-let currentWeek = getCurrentWeek();
+    if (!groupe) {
+      document.getElementById("welcome").innerText = "Erreur : aucun groupe indiqué.";
+    } else {
+      document.getElementById("welcome").innerText = `Bienvenue, Groupe ${groupe}`;
+    }
 
-// --- AFFICHAGE ---
-function showWeek(num) {
-  const week = weeks.find(w => w.num === num);
-  
-  // Si la semaine n'existe pas dans le tableau, on affiche juste le numéro
-  const label = week ? week.label : "hors période";
-  
-  const imageUrl = week ? `edt/groupe${groupe}/semaine${week.num}.png` : "";
-  
-  document.getElementById("edt").innerHTML = `
-    <p>Semaine calculée par le script : ${num} (${label})</p>
-    ${imageUrl ? `<img src="${imageUrl}" alt="Emploi du temps Semaine ${num}">` : `<p>Aucune image disponible</p>`}
-  `;
-}
+    // --- TROUVER LA SEMAINE COURANTE ---
+    function getCurrentWeek() {
+      const today = new Date();
+      for (let i = 0; i < weeks.length; i++) {
+        const start = new Date(weeks[i].start);
+        const next = (i + 1 < weeks.length) ? new Date(weeks[i + 1].start) : null;
 
-// Affiche la semaine actuelle
-showWeek(currentWeek);
+        if (today >= start && (!next || today < next)) {
+          return weeks[i].num;
+        }
+      }
+      // Si on est après la dernière semaine, retourne un numéro supérieur pour test
+      return weeks.length + 1;
+    }
+
+    let currentWeek = getCurrentWeek();
+
+    // --- AFFICHAGE ---
+    function showWeek(num) {
+      const week = weeks.find(w => w.num === num);
+      const label = week ? week.label : "hors période";
+      const imageUrl = week ? `edt/groupe${groupe}/semaine${week.num}.png` : "";
+
+      document.getElementById("edt").innerHTML = `
+        <p>Semaine calculée par le script : ${num} (${label})</p>
+        ${imageUrl ? `<img src="${imageUrl}" alt="Emploi du temps Semaine ${num}">` : `<p>Aucune image disponible</p>`}
+      `;
+    }
+
+    // --- NAVIGATION ---
+    function changeWeek(offset) {
+      let newWeek = currentWeek + offset;
+      if (newWeek < 1) newWeek = 1;
+      currentWeek = newWeek;
+      showWeek(currentWeek);
+    }
+
+    // Affiche la semaine actuelle au chargement
+    showWeek(currentWeek);
+  </script>
+</body>
+</html>
