@@ -55,18 +55,24 @@
 
     // --- TROUVER LA SEMAINE COURANTE ---
     function getCurrentWeek() {
-      const today = new Date();
-      for (let i = 0; i < weeks.length; i++) {
-        const start = new Date(weeks[i].start);
-        const next = (i + 1 < weeks.length) ? new Date(weeks[i + 1].start) : null;
+  const today = new Date();
+  const todayYMD = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
 
-        if (today >= start && (!next || today < next)) {
-          return weeks[i].num;
-        }
-      }
-      // Si on est après la dernière semaine, retourne un numéro supérieur pour test
-      return weeks.length + 1;
+  for (let i = 0; i < weeks.length; i++) {
+    const start = new Date(weeks[i].start);
+    const startYMD = start.getFullYear() * 10000 + (start.getMonth() + 1) * 100 + start.getDate();
+
+    const next = (i + 1 < weeks.length) ? new Date(weeks[i + 1].start) : null;
+    const nextYMD = next ? (next.getFullYear() * 10000 + (next.getMonth() + 1) * 100 + next.getDate()) : null;
+
+    if (todayYMD >= startYMD && (!nextYMD || todayYMD < nextYMD)) {
+      return weeks[i].num;
     }
+  }
+
+  return weeks.length; // Si après la dernière semaine, on renvoie la dernière
+}
+
 
     let currentWeek = getCurrentWeek();
 
@@ -74,7 +80,7 @@
     function showWeek(num) {
       const week = weeks.find(w => w.num === num);
       const label = week ? week.label : "hors période";
-      const imageUrl = week ? `edt/groupe${groupe}/semaine${week.num}.png` : "";
+      const imageUrl = week ? `edt/groupe${groupe}/semaine_${week.num}.png` : "";
 
       document.getElementById("edt").innerHTML = `
         <p>Semaine calculée par le script : ${num} (${label})</p>
