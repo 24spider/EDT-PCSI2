@@ -1,1 +1,53 @@
 # pasteur.github.io
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Emploi du temps</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+    img { max-width: 100%; height: auto; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1 id="welcome"></h1>
+  <div id="edt"></div>
+
+  <script>
+    // Fonction pour lire les paramètres d'URL
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    // Récupère le numéro de groupe depuis l'URL : ?grp=1
+    const groupe = getQueryParam("grp");
+
+    if (!groupe) {
+      document.getElementById("welcome").innerText = "Erreur : aucun groupe indiqué.";
+    } else {
+      document.getElementById("welcome").innerText = `Bienvenue, Groupe ${groupe}`;
+
+      // Fonction pour calculer la semaine ISO
+      function getWeekNumber(d) {
+        d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+        const dayNum = d.getUTCDay() || 7;
+        d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+        const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+        return Math.ceil((((d - yearStart) / 86400000) + 1)/7);
+      }
+
+      const week = getWeekNumber(new Date());
+
+      // Exemple de structure de fichiers : /edt/groupeX/semaineY.png
+      const imageUrl = `edt/groupe${groupe}/semaine${week}.png`;
+
+      document.getElementById("edt").innerHTML = `
+        <p>Semaine ${week}</p>
+        <img src="${imageUrl}" alt="Emploi du temps Semaine ${week}">
+      `;
+    }
+  </script>
+</body>
+</html>
