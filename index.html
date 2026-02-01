@@ -164,7 +164,7 @@
     function changeWeek(offset) {
       let newWeek = currentWeek + offset;
       if (newWeek < 1) newWeek = 1;
-      if (newWeek > 16) newWeek = 1;
+      if (newWeek > weeks.length) newWeek = 1;
       currentWeek = newWeek;
       showWeek(currentWeek);
     }
