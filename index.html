@@ -163,8 +163,8 @@
     // --- NAVIGATION ---
     function changeWeek(offset) {
       let newWeek = currentWeek + offset;
-      if (newWeek < 1) newWeek = 1;
-      if (newWeek > weeks.length) newWeek = 1;
+      if (newWeek < 0) newWeek = 0;
+      if (newWeek > weeks.length) newWeek = 0;
       currentWeek = newWeek;
       showWeek(currentWeek);
     }
