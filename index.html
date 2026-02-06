@@ -134,7 +134,7 @@
     const nextYMD = next ? (next.getFullYear() * 10000 + (next.getMonth() + 1) * 100 + next.getDate()) : null;
 
     if (todayYMD >= startYMD && (!nextYMD || todayYMD < nextYMD)) {
-      return weeks[i].num;
+      return weeks[i].num+1;
     }
   }
 
