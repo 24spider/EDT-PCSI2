@@ -124,22 +124,23 @@
     // --- TROUVER LA SEMAINE COURANTE ---
     function getCurrentWeek() {
   const today = new Date();
-  const todayYMD = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+  today.setHours(0, 0, 0, 0);
 
   for (let i = 0; i < weeks.length; i++) {
-    const start = new Date(weeks[i].start);
-    const startYMD = start.getFullYear() * 10000 + (start.getMonth() + 1) * 100 + start.getDate();
+    const start = new Date(weeks[i].start + "T00:00:00");
 
-    const next = (i + 1 < weeks.length) ? new Date(weeks[i + 1].start) : null;
-    const nextYMD = next ? (next.getFullYear() * 10000 + (next.getMonth() + 1) * 100 + next.getDate()) : null;
+    const nextStart = weeks[i + 1]
+      ? new Date(weeks[i + 1].start + "T00:00:00")
+      : null;
 
-    if (todayYMD >= startYMD && (!nextYMD || todayYMD < nextYMD)) {
-      return weeks[i].num+1;
+    if (today >= start && (!nextStart || today < nextStart)) {
+      return weeks[i].num; // pas de +1
     }
   }
 
-  return weeks.length; // Si après la dernière semaine, on renvoie la dernière
+  return weeks.length - 1; // après la dernière → dernière semaine
 }
+
 
 
     let currentWeek = getCurrentWeek();
